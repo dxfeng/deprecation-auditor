@@ -1,2 +1,5 @@
 # Core dependencies
 requests==2.34.2
+pytest
+requests-mock
+black
