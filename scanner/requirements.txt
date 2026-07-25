@@ -1,5 +1,7 @@
 # Core dependencies
 requests==2.34.2
 pytest
+grequests
 requests-mock
 black
+packaging
