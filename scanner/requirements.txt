@@ -1,7 +1,8 @@
 # Core dependencies
-requests==2.34.2
+requests
 pytest
 grequests
 requests-mock
 black
 packaging
+distlib

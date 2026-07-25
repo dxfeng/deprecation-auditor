@@ -1,0 +1,21 @@
+{
+  "beautifulsoup4": "bs4",
+  "pyyaml": "yaml",
+  "pillow": "PIL",
+  "opencv-python": "cv2",
+  "scikit-learn": "sklearn",
+  "protobuf": "google.protobuf",
+  "grpcio": "grpc",
+  "python-dateutil": "dateutil",
+  "python-dotenv": "dotenv",
+  "psycopg2-binary": "psycopg2",
+  "pyjwt": "jwt",
+  "pynacl": "nacl",
+  "websocket-client": "websocket",
+  "attrs": "attr",
+  "pycrypto": "Crypto",
+  "pycryptodome": "Crypto",
+  "djangorestframework": "rest_framework",
+  "django-cors-headers": "corsheaders",
+  "google-cloud-storage": "google.cloud.storage"
+}

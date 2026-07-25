@@ -34,12 +34,11 @@ def check_deps(deps: dict[str, Requirement]) -> list[Detection]:
 def git_commit_sha(repo_root: Path) -> str:
     try:
         result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+                ["git", "rev-parse", "HEAD"],
+                cwd=repo_root,
+                capture_output=True,
+                text=True,
+                check=True,)
         return result.stdout.strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         return "unknown"
