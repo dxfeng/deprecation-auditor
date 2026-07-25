@@ -1,6 +1,22 @@
+import json
+from pathlib import Path
+
 import grequests
 from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
 from packaging.version import Version, InvalidVersion
+
+DEPR_PACKAGES_PATH = Path(__file__).parent / "deprecated_pypi_packages.json"
+
+
+def load_curated_deprecated() -> dict[str, dict]:
+    with open(DEPR_PACKAGES_PATH) as f:
+        raw = json.load(f)
+    return {canonicalize_name(name): info for name, info in raw.items()}
+
+
+DEPR_LIST = load_curated_deprecated()
+
 
 def fetch(dependencies: list[str]) -> dict:
     urls = [f"https://pypi.org/pypi/{dep}/json" for dep in dependencies]
@@ -8,17 +24,25 @@ def fetch(dependencies: list[str]) -> dict:
     return {dep: r.json() for dep, r in zip(dependencies, res)}
 
 
-def get_yanked(requirement: Requirement, pypi_data: dict) -> str | None:
+def get_yanked(requirement: Requirement, pypi_data: dict) -> tuple[str, str] | None:
+    """ Returns (source, reason) where source is "depr_package" or "yanked".
+        Returns None if the requirement isn't flagged by either check."""
+
+    depr_package = DEPR_LIST.get(canonicalize_name(requirement.name))
+    if depr_package is not None:
+        return "depr_package", depr_package["reason"]
+
     resolved_version = resolve_version(requirement, pypi_data)
     if resolved_version is None:
         return None
 
-    release_files = pypi_data.get("releases", {}).get(resolved_version)
-
-    if not (release_files and any(f.get("yanked") for f in release_files)):
+    release_files = pypi_data.get("releases", {}).get(resolved_version) or []
+    yanked_file = next((f for f in release_files if f.get("yanked")), None)
+    if yanked_file is None:
         return None
-    
-    return resolved_version
+
+    yanked_reason = yanked_file.get("yanked_reason") or "No reason given"
+    return "yanked", yanked_reason
 
 
 def resolve_version(requirement: Requirement, pypi_data: dict) -> str | None:

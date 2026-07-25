@@ -1,0 +1,50 @@
+{
+  "nose": {
+    "reason": "Unmaintained; nose's own documentation recommends switching to pytest or the standard library's unittest.",
+    "replacement": "pytest"
+  },
+  "pycrypto": {
+    "reason": "Unmaintained with known unpatched security vulnerabilities; superseded by pycryptodome, a drop-in replacement.",
+    "replacement": "pycryptodome"
+  },
+  "pep8": {
+    "reason": "Renamed by its own maintainers to avoid confusion with the PEP 8 style guide itself.",
+    "replacement": "pycodestyle"
+  },
+  "pypiwin32": {
+    "reason": "Deprecated wrapper package; its functionality was merged directly into pywin32.",
+    "replacement": "pywin32"
+  },
+  "flask-babelex": {
+    "reason": "Unmaintained fork of flask-babel; flask-babel absorbed the features flask-babelex added.",
+    "replacement": "flask-babel"
+  },
+  "nose-parameterized": {
+    "reason": "Renamed by its own maintainers to 'parameterized'; the old package name is an unmaintained alias.",
+    "replacement": "parameterized"
+  },
+  "sklearn": {
+    "reason": "Deprecated PyPI placeholder; the real package is published as scikit-learn, and installing 'sklearn' itself prints a deprecation warning.",
+    "replacement": "scikit-learn"
+  },
+  "distribute": {
+    "reason": "Deprecated fork of setuptools; merged back into and superseded by setuptools.",
+    "replacement": "setuptools"
+  },
+  "unittest2": {
+    "reason": "Backport of unittest features that have long since landed in the standard library's unittest module.",
+    "replacement": "unittest (standard library)"
+  },
+  "flask-script": {
+    "reason": "Deprecated by its own maintainers in favor of Flask's built-in CLI (Click-based) since Flask 0.11.",
+    "replacement": "Flask's built-in CLI"
+  },
+  "django-rest-swagger": {
+    "reason": "Deprecated by its own maintainers; no longer compatible with actively maintained Django REST Framework versions.",
+    "replacement": "drf-yasg or drf-spectacular"
+  },
+  "path.py": {
+    "reason": "Renamed by its own maintainers to 'path'; the old package name is an unmaintained alias.",
+    "replacement": "path"
+  }
+}
