@@ -26,16 +26,17 @@ def fetch(dependencies: list[str]) -> dict:
 
 def get_yanked(requirement: Requirement, pypi_data: dict) -> tuple[str, str, str] | None:
     """ Returns (source, reason, version) where source is "depr_package" or "yanked"
-            Version is the resolved version of the requirement if source is "yanked", otherwise the dependency name.
+            Version is the resolved version of the requirement if source is yanked/deprecated.
         Returns None if the requirement isn't flagged by either check."""
-
-    depr_package = DEPR_LIST.get(canonicalize_name(requirement.name))
-    if depr_package is not None:
-        return "depr_package", depr_package["reason"], requirement.name
 
     resolved_version = resolve_version(requirement, pypi_data)
     if resolved_version is None:
         return None
+    
+    depr_package = DEPR_LIST.get(canonicalize_name(requirement.name))
+    if depr_package is not None:
+        return "depr_package", depr_package["reason"], resolved_version
+
 
     release_files = pypi_data.get("releases", {}).get(resolved_version) or []
     yanked_file = next((f for f in release_files if f.get("yanked")), None)
