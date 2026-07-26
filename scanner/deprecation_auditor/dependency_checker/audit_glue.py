@@ -29,7 +29,7 @@ def git_commit_sha(repo_root: Path) -> str:
     except (subprocess.CalledProcessError, FileNotFoundError):
         return "unknown"
 
-def perform_audit(args:list):
+def perform_audit(args:list) -> int:
     """
         args -> ["manifest_path", "repo_root", "repo_info", "github_token"]
     """
@@ -58,3 +58,5 @@ def perform_audit(args:list):
 
     #print(json.dumps(to_dict(audit_result)))
     post_comment(audit_result, repo_info, github_token)
+
+    return int(bool(detections))

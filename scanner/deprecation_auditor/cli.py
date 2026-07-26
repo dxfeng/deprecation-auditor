@@ -8,8 +8,10 @@ def main():
         args -> ["manifest_path", "repo_root", "repo_info", "github_token"]
         """
 
-        perform_audit(args[1:])
+        return perform_audit(args[1:])
+    return 0
         
 
 if __name__ == "__main__":
-    main()
+    res = main()
+    sys.exit(res);

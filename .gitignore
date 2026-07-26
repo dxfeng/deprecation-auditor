@@ -1,9 +1,11 @@
-scanner/venv/
+venv/
+.venv/
 **/__pycache__/
 *.pyc
 node_modules/
 .env
 .env.*
 !.env.example
+.secrets
 .DS_Store
 Thumbs.db
