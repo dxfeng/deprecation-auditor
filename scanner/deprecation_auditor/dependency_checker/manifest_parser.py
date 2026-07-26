@@ -20,7 +20,7 @@ def parse_manifest(manifest_content: str) -> dict[str, Requirement]:
                 requirement = Requirement(line)
                 requirements[requirement.name] = requirement
             except InvalidRequirement:
-                print(f"Skipping invalid requirement: {line}", file=sys.stderr)
+                pass
             
 
     return requirements

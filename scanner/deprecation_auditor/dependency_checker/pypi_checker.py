@@ -29,7 +29,11 @@ def fetch(dependencies: list[str]) -> dict:
 def get_yanked(requirement: Requirement, pypi_data: dict) -> tuple[str, str, str] | None:
     """ Returns (source, reason, version) where source is "depr_package" or "yanked"
             Version is the resolved version of the requirement if source is yanked/deprecated.
-        Returns None if the requirement isn't flagged by either check."""
+        Returns None if the requirement isn't flagged by either check.
+        
+        
+        limitation of depr_list -> finite list of curated packages by gemini and claude that are known to be deprecated.    
+    """
 
     resolved_version = resolve_version(requirement, pypi_data)
 
