@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 import uuid
@@ -11,6 +12,11 @@ from ..ast_scanner.repo_ast_traversal import find_audited_dep, get_files_as_ast
 from ..models import AuditResult, to_dict
 
 def git_commit_sha(repo_root: Path) -> str:
+    github_sha = os.environ.get("GITHUB_SHA")
+    if github_sha:
+        return github_sha
+    
+    # for local testing before I put it into a docker action
     try:
         result = subprocess.run(
                 ["git", "rev-parse", "HEAD"],

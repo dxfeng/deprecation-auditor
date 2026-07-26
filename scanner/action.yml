@@ -1,0 +1,25 @@
+name: 'Deprecation Auditor'
+description: 'Notifies when a commit uses deprecated dependencies (yanked/eol/new package/etc).'
+
+inputs:
+  manifest-path:
+    description: 'Path to the requirements.txt being scanned'
+    required: true
+    default: 'requirements.txt'
+  repo-root:
+    description: 'Repo root directory'
+    required: true
+    default: '.'
+  repo-info:
+    description: 'Repository identifier'
+    required: true
+    default: ${{ github.repository }}
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - 'pypi_audit'
+    - ${{ inputs.manifest-path }}
+    - ${{ inputs.repo-root }}
+    - ${{ inputs.repo-info }}
