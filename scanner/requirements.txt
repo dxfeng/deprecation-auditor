@@ -1,5 +1,5 @@
 # Core dependencies
-requests
+requests==2.32.1
 pytest
 grequests
 requests-mock
