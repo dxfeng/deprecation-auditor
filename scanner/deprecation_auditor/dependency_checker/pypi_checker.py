@@ -40,7 +40,7 @@ def get_yanked(requirement: Requirement, pypi_data: dict) -> tuple[str, str, str
     depr_package = DEPR_LIST.get(canonicalize_name(requirement.name))
     if depr_package is not None:
         version = resolved_version or str(requirement.specifier) or "unspecified"
-        return "depr_package", depr_package["reason"], version
+        return "depr_package", depr_package["reason"] + f" Use {depr_package.get('replacement')}.", version
 
     if resolved_version is None:
         return None
@@ -87,7 +87,7 @@ def check_deps(deps: dict[str, Requirement]) -> list[Detection]:
         detections.append(Detection(
                         package=name,
                         version=version,
-                        depr_status=source,
-                        src=reason,
+                        depr_status=reason,
+                        src=source,
                         usages=[],))
     return detections

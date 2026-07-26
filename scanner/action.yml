@@ -14,6 +14,10 @@ inputs:
     description: 'Repository identifier'
     required: true
     default: ${{ github.repository }}
+  github-token:
+    description: 'Token used to read PR files and post PR comments'
+    required: true
+    default: ${{ github.token }}
 
 runs:
   using: 'docker'
@@ -23,3 +27,4 @@ runs:
     - ${{ inputs.manifest-path }}
     - ${{ inputs.repo-root }}
     - ${{ inputs.repo-info }}
+    - ${{ inputs.github-token }}

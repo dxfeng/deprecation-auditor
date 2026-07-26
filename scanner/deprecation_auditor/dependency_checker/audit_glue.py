@@ -10,6 +10,7 @@ from .manifest_parser import parse_manifest
 from .pypi_checker import check_deps
 from ..ast_scanner.repo_ast_traversal import find_audited_dep, get_files_as_ast
 from ..models import AuditResult, to_dict
+from ..integration.pr_reader import post_comment
 
 def git_commit_sha(repo_root: Path) -> str:
     github_sha = os.environ.get("GITHUB_SHA")
@@ -30,13 +31,14 @@ def git_commit_sha(repo_root: Path) -> str:
 
 def perform_audit(args:list):
     """
-        args -> ["manifest_path", "repo_root", "repo_info"]
+        args -> ["manifest_path", "repo_root", "repo_info", "github_token"]
     """
 
 
     manifest_path = Path(args[0])
     repo_root = args[1]
     repo_info = args[2]
+    github_token = args[3]
 
 
     deps = parse_manifest(manifest_path.read_text())
@@ -54,4 +56,5 @@ def perform_audit(args:list):
                 audit_time=datetime.now(timezone.utc).isoformat(),
                 detections=detections)
 
-    print(json.dumps(to_dict(audit_result)))
+    #print(json.dumps(to_dict(audit_result)))
+    post_comment(audit_result, repo_info, github_token)
