@@ -6,6 +6,8 @@ from packaging.requirements import Requirement
 from packaging.utils import canonicalize_name
 from packaging.version import Version, InvalidVersion
 
+from ..models import Detection
+
 DEPR_PACKAGES_PATH = Path(__file__).parent / "deprecated_pypi_packages.json"
 
 
@@ -30,13 +32,14 @@ def get_yanked(requirement: Requirement, pypi_data: dict) -> tuple[str, str, str
         Returns None if the requirement isn't flagged by either check."""
 
     resolved_version = resolve_version(requirement, pypi_data)
-    if resolved_version is None:
-        return None
-    
+
     depr_package = DEPR_LIST.get(canonicalize_name(requirement.name))
     if depr_package is not None:
-        return "depr_package", depr_package["reason"], resolved_version
+        version = resolved_version or str(requirement.specifier) or "unspecified"
+        return "depr_package", depr_package["reason"], version
 
+    if resolved_version is None:
+        return None
 
     release_files = pypi_data.get("releases", {}).get(resolved_version) or []
     yanked_file = next((f for f in release_files if f.get("yanked")), None)
@@ -67,3 +70,20 @@ def resolve_version(requirement: Requirement, pypi_data: dict) -> str | None:
 
     return by_version[max(stable_v)]
 
+def check_deps(deps: dict[str, Requirement]) -> list[Detection]:
+    pypi_data = fetch(list(deps.keys()))
+
+    detections = []
+    for name, requirement in deps.items():
+        result = get_yanked(requirement, pypi_data[name])
+        if result is None:
+            continue
+        source, reason, version = result
+
+        detections.append(Detection(
+                        package=name,
+                        version=version,
+                        depr_status=source,
+                        src=reason,
+                        usages=[],))
+    return detections
