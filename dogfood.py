@@ -4,6 +4,7 @@ import sys
 from requests import RequestException
 
 def main():
+    print("Hello world!")
     pass
 
 if __name__ == "__main__":
