@@ -4,6 +4,10 @@ from .dependency_checker.audit_glue import perform_audit
 
 def main():
     if args[0] == "pypi_audit":
+        """
+        args -> ["manifest_path", "repo_root", "repo_info"]
+        """
+
         perform_audit(args[1:])
         
 
