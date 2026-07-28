@@ -36,7 +36,7 @@ def post_comment(audit: AuditResult, repo_info: str, token: str):
 
     res = requests.post(
         f"https://api.github.com/repos/{repo_info}/issues/{pr_number}/comments",
-        headers=headers, json={"body": body})
+        headers=headers, json={"body": body}, timeout=10)
 
     # for debugging (but probably shouldnt ever happen?)
 
