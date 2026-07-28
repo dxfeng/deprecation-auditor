@@ -25,7 +25,7 @@ To-do:
 
 ```mermaid
 flowchart TD
-    Browser((User's Browser)) --> Dashboard[Dashboard\nReact, Vercel]
+    Browser((Client (Browser))) --> Dashboard[Dashboard\nReact, Vercel]
 
     subgraph Supabase["Supabase"]
         AuthSvc[Auth: GitHub OAuth]
@@ -35,12 +35,14 @@ flowchart TD
 
     Dashboard -->|OAuth sign-in| AuthSvc
     Dashboard -->|track / untrack| ReposTable
-    Dashboard -->|list public repos| GitHub[GitHub REST API]
 
     Repo[(Pull request on a tracked repo)] -->|pull_request event| Scanner[Scanner\nDocker Action]
     Scanner -->|anon key| RPC
     RPC -->|reads| ReposTable
     Scanner -->|GET metadata| PyPI[PyPI JSON API]
+
+    GitHub[GitHub REST API]
+    Dashboard -->|list public repos| GitHub
     Scanner -->|POST comment| GitHub
     GitHub -->|comment appears on| Repo
 ```
