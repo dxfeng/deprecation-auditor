@@ -6,13 +6,13 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-import requests
-
 from .manifest_parser import parse_manifest
 from .pypi_checker import check_deps
 from ..ast_scanner.repo_ast_traversal import find_audited_dep, get_files_as_ast
 from ..models import AuditResult
 from ..integration.pr_reader import post_comment
+
+import requests
 
 def is_repo_tracked(repo_info: str, supabase_url: str, supabase_anon_key: str) -> bool:
     headers = {
