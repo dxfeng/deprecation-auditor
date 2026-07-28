@@ -24,30 +24,43 @@ To-do:
 **Architecture**
 
 ```mermaid
-flowchart TD
-    User((User's browser))
-    Repo[Target GitHub repo]
-    Supa[(Supabase: repos table + is_repo_tracked RPC)]
-
-    subgraph Setup["Setup — dashboard, once per repo"]
-        direction LR
-        User -->|sign in via GitHub OAuth| Supa
-        User -->|list repos| GHAPI1[GitHub REST API]
-        User -->|Track / Untrack| Supa
-        User -->|pastes workflow YAML| Repo
+flowchart LR
+    subgraph Client["Client"]
+        Browser((User's Browser))
     end
 
-    subgraph Runtime["Runtime — every PR push"]
-        direction TB
-        Repo -->|pull_request event| Action[Scanner: Docker Action]
-        Action -->|is_repo_tracked?| Supa
-        Action -->|not tracked| Skip([exit, no-op])
-        Action -->|tracked| Parse[Parse requirements.txt]
-        Parse --> PyPICheck[Check PyPI: yanked / deprecated]
-        PyPICheck --> AST[AST scan: usage locations]
-        AST --> Comment[Post PR comment]
-        Comment -->|GitHub REST API| Repo
+    subgraph Frontend["Frontend — Vercel"]
+        Dashboard[Dashboard\nReact]
     end
+
+    subgraph Compute["Compute — GitHub Actions"]
+        Scanner[Scanner\nDocker Action]
+    end
+
+    subgraph Data["Data Layer — Supabase"]
+        AuthSvc[Auth\nGitHub OAuth]
+        ReposTable[(repos table)]
+        RPC{{is_repo_tracked RPC}}
+    end
+
+    subgraph External["External APIs"]
+        GitHubAPI[GitHub REST API]
+        PyPIAPI[PyPI JSON API]
+    end
+
+    Repo[(Target repo\nPull Request)]
+
+    Browser -->|HTTPS| Dashboard
+    Dashboard -->|OAuth sign-in| AuthSvc
+    Dashboard -->|SELECT / INSERT / DELETE| ReposTable
+    Dashboard -->|list repos, provider_token| GitHubAPI
+
+    Repo -->|pull_request event| Scanner
+    Scanner -->|anon key| RPC
+    RPC -->|reads| ReposTable
+    Scanner -->|GET package metadata| PyPIAPI
+    Scanner -->|POST comment| GitHubAPI
+    GitHubAPI -->|comment appears on| Repo
 ```
 
 `dashboard/` Written in React. Deployed on Vercel. Allows GitHub sign-in and enable tracking/un-tracking of repos.
