@@ -37,7 +37,7 @@ flowchart TD
     Dashboard -->|track / untrack| ReposTable
     Dashboard -->|list public repos| GitHub[GitHub REST API]
 
-    Repo[(Target repo\nPull Request)] -->|pull_request event| Scanner[Scanner\nDocker Action]
+    Repo[(Pull request on a tracked repo)] -->|pull_request event| Scanner[Scanner\nDocker Action]
     Scanner -->|anon key| RPC
     RPC -->|reads| ReposTable
     Scanner -->|GET metadata| PyPI[PyPI JSON API]
