@@ -19,12 +19,38 @@ Yanked status is taken from `pypi` API, while fully deprecated Python dependenci
 To-do:
 - Work on packages.json (npm/js)
 - Increase size of deprecated dependency repo
+- Make audit results visible on the Vercel `dashboard`
 
 **Architecture**
 
-Vercel to host the app.
+```mermaid
+flowchart TD
+    User((User's browser))
+    Repo[Target GitHub repo]
+    Supa[(Supabase: repos table + is_repo_tracked RPC)]
 
-GitHub OAuth for authentication and access to a users public repos.
+    subgraph Setup["Setup — dashboard, once per repo"]
+        direction LR
+        User -->|sign in via GitHub OAuth| Supa
+        User -->|list repos| GHAPI1[GitHub REST API]
+        User -->|Track / Untrack| Supa
+        User -->|pastes workflow YAML| Repo
+    end
 
-Supabase to store what repos a user wants to track. 
+    subgraph Runtime["Runtime — every PR push"]
+        direction TB
+        Repo -->|pull_request event| Action[Scanner: Docker Action]
+        Action -->|is_repo_tracked?| Supa
+        Action -->|not tracked| Skip([exit, no-op])
+        Action -->|tracked| Parse[Parse requirements.txt]
+        Parse --> PyPICheck[Check PyPI: yanked / deprecated]
+        PyPICheck --> AST[AST scan: usage locations]
+        AST --> Comment[Post PR comment]
+        Comment -->|GitHub REST API| Repo
+    end
+```
 
+`dashboard/` Written in React. Deployed on Vercel. Allows GitHub sign-in and enable tracking/un-tracking of repos.
+`scanner/` A Docker Action (since I needed various specific python dependencies and wanted more control over env). Queries Pypi API and uses the in-repo dataset to check what dependencies of the given repo are deprecated/yanked. Uses `ast` library to find the exact lines bad dependencies are used.
+
+*supabase* - PostgreSQL database to store what repos are tracked by a user. Currently has blank tables regarding the detections found.
