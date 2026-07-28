@@ -28,10 +28,10 @@ flowchart TD
     Browser((Client\nBrowser)) --> Dashboard[Dashboard\nReact, Vercel]
 
     subgraph Supabase["Supabase"]
-        direction LR
-        ReposTable[(repos table)]
         AuthSvc[Auth: GitHub OAuth]
         RPC{{is_repo_tracked RPC}}
+        ReposTable[(repos table)]
+        RPC -->|reads| ReposTable
     end
 
     Dashboard -->|OAuth sign-in| AuthSvc
@@ -39,7 +39,6 @@ flowchart TD
 
     Repo[(Pull request on a tracked repo)] -->|pull_request event| Scanner[Scanner\nDocker Action]
     Scanner -->|anon key| RPC
-    RPC -->|reads| ReposTable
     Scanner -->|GET metadata| PyPI[PyPI JSON API]
 
     GitHub[GitHub REST API]
