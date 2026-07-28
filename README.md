@@ -24,43 +24,25 @@ To-do:
 **Architecture**
 
 ```mermaid
-flowchart LR
-    subgraph Client["Client"]
-        Browser((User's Browser))
-    end
+flowchart TD
+    Browser((User's Browser)) --> Dashboard[Dashboard\nReact, Vercel]
 
-    subgraph Frontend["Frontend — Vercel"]
-        Dashboard[Dashboard\nReact]
-    end
-
-    subgraph Compute["Compute — GitHub Actions"]
-        Scanner[Scanner\nDocker Action]
-    end
-
-    subgraph Data["Data Layer — Supabase"]
-        AuthSvc[Auth\nGitHub OAuth]
+    subgraph Supabase["Supabase"]
+        AuthSvc[Auth: GitHub OAuth]
         ReposTable[(repos table)]
         RPC{{is_repo_tracked RPC}}
     end
 
-    subgraph External["External APIs"]
-        GitHubAPI[GitHub REST API]
-        PyPIAPI[PyPI JSON API]
-    end
-
-    Repo[(Target repo\nPull Request)]
-
-    Browser -->|HTTPS| Dashboard
     Dashboard -->|OAuth sign-in| AuthSvc
-    Dashboard -->|SELECT / INSERT / DELETE| ReposTable
-    Dashboard -->|list public repos| GitHubAPI
+    Dashboard -->|track / untrack| ReposTable
+    Dashboard -->|list public repos| GitHub[GitHub REST API]
 
-    Repo -->|pull_request event| Scanner
+    Repo[(Target repo\nPull Request)] -->|pull_request event| Scanner[Scanner\nDocker Action]
     Scanner -->|anon key| RPC
     RPC -->|reads| ReposTable
-    Scanner -->|GET package metadata| PyPIAPI
-    Scanner -->|POST comment| GitHubAPI
-    GitHubAPI -->|comment appears on| Repo
+    Scanner -->|GET metadata| PyPI[PyPI JSON API]
+    Scanner -->|POST comment| GitHub
+    GitHub -->|comment appears on| Repo
 ```
 
 `dashboard/` Written in React. Deployed on Vercel. Allows GitHub sign-in and enable tracking/un-tracking of repos.
