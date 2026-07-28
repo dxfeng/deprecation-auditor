@@ -5,4 +5,4 @@ grequests
 requests-mock
 black
 packaging
-distlib
+distlibnose
