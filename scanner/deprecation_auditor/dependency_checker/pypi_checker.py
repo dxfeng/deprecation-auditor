@@ -22,8 +22,15 @@ DEPR_LIST = load_curated_deprecated()
 
 def fetch(dependencies: list[str]) -> dict:
     urls = [f"https://pypi.org/pypi/{dep}/json" for dep in dependencies]
-    res = grequests.map(grequests.get(url) for url in urls)
-    return {dep: r.json() for dep, r in zip(dependencies, res)}
+    res = grequests.map(grequests.get(url, timeout=10) for url in urls)
+
+    data = {}
+    for dep, r in zip(dependencies, res):
+        try:
+            data[dep] = r.json()
+        except (AttributeError, ValueError):
+            data[dep] = {}
+    return data
 
 
 def get_yanked(requirement: Requirement, pypi_data: dict) -> tuple[str, str, str] | None:

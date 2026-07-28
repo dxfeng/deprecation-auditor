@@ -5,7 +5,7 @@ from .dependency_checker.audit_glue import perform_audit
 def main():
     if args[0] == "pypi_audit":
         """
-        args -> ["manifest_path", "repo_root", "repo_info", "github_token"]
+        args -> ["manifest_path", "repo_root", "repo_info", "github_token", "supabase_url", "supabase_key"]
         """
 
         return perform_audit(args[1:])

@@ -23,6 +23,7 @@ def is_repo_tracked(repo_info: str, supabase_url: str, supabase_anon_key: str) -
         f"{supabase_url}/rest/v1/rpc/is_repo_tracked",
         headers=headers,
         json={"p_repo_name": repo_info},
+        timeout=10,
     )
     response.raise_for_status()
     return response.json() is True
@@ -57,8 +58,13 @@ def perform_audit(args:list) -> int:
     supabase_url = args[4]
     supabase_key = args[5]
 
-    if supabase_key and not is_repo_tracked(repo_info, supabase_url, supabase_key):
-        return 0
+    if supabase_key:
+        try:
+            tracked = is_repo_tracked(repo_info, supabase_url, supabase_key)
+        except requests.RequestException:
+            return 0
+        if not tracked:
+            return 0
 
     deps = parse_manifest(manifest_path.read_text())
     detections = check_deps(deps)
