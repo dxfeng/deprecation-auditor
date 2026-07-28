@@ -16,7 +16,7 @@ CREATE TABLE audits (
     commit_sha TEXT NOT NULL,
     audit_time TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-    repo_id UUID NOT NULL REFERENCES repos(id)
+    repo_id UUID NOT NULL REFERENCES repos(id) ON DELETE CASCADE
 );
 
 CREATE TABLE detections (
@@ -28,7 +28,7 @@ CREATE TABLE detections (
     depr_status TEXT NOT NULL,
     src TEXT NOT NULL,
 
-    audit_id UUID NOT NULL REFERENCES audits(id)
+    audit_id UUID NOT NULL REFERENCES audits(id) ON DELETE CASCADE
 );
 
 CREATE TABLE usages (
@@ -39,7 +39,7 @@ CREATE TABLE usages (
     usage_line INT NOT NULL,
     usage_code TEXT NOT NULL,
 
-    detection_id UUID NOT NULL REFERENCES detections(id)
+    detection_id UUID NOT NULL REFERENCES detections(id) ON DELETE CASCADE
 );
 
 ALTER TABLE repos ENABLE ROW LEVEL SECURITY;
