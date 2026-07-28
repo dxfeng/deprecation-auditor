@@ -41,12 +41,14 @@ flowchart TD
     Repo[(Pull request on a tracked repo)] -->|pull_request event| Scanner[Scanner\nDocker Action]
     Scanner -->|anon key| RPC
     Scanner -->|GET metadata| PyPI[PyPI JSON API]
+    Scanner -->|check curated list| DeprDataset[(In-repo dataset\ndeprecated_pypi_packages.json)]
 
     GitHub[GitHub REST API]
     Dashboard -->|list public repos| GitHub
     Scanner -->|POST comment| GitHub
     GitHub -->|comment appears on| Repo
 ```
+*Mermaid made with assistance of Claude*
 
 `dashboard/` Written in React. Deployed on Vercel. Allows GitHub sign-in and enable tracking/un-tracking of repos.
 `scanner/` A Docker Action (since I needed various specific python dependencies and wanted more control over env). Queries Pypi API and uses the in-repo dataset to check what dependencies of the given repo are deprecated/yanked. Uses `ast` library to find the exact lines bad dependencies are used.
