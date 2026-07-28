@@ -16,5 +16,7 @@ Example of comment can be found on the [dogfood branch of this repo](https://git
 
 Yanked status is taken from `pypi` API, while fully deprecated Python dependencies are checked from an in-repo database.
 
-
+To-do:
+- Work on packages.json (npm/js)
+- Increase size of deprecated dependency repo
 
