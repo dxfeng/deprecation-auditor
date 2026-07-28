@@ -28,8 +28,9 @@ flowchart TD
     Browser((Client\nBrowser)) --> Dashboard[Dashboard\nReact, Vercel]
 
     subgraph Supabase["Supabase"]
-        AuthSvc[Auth: GitHub OAuth]
+        direction LR
         ReposTable[(repos table)]
+        AuthSvc[Auth: GitHub OAuth]
         RPC{{is_repo_tracked RPC}}
     end
 
