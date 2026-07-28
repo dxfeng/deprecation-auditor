@@ -68,3 +68,16 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON repos TO service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON audits TO service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON detections TO service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON usages TO service_role;
+
+CREATE OR REPLACE FUNCTION public.is_repo_tracked(p_repo_name TEXT)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM repos WHERE repo_name = p_repo_name
+  );
+$$;
+
+GRANT EXECUTE ON FUNCTION public.is_repo_tracked(TEXT) TO anon;

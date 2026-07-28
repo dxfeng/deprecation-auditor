@@ -6,11 +6,26 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
+import requests
+
 from .manifest_parser import parse_manifest
 from .pypi_checker import check_deps
 from ..ast_scanner.repo_ast_traversal import find_audited_dep, get_files_as_ast
-from ..models import AuditResult, to_dict
+from ..models import AuditResult
 from ..integration.pr_reader import post_comment
+
+def is_repo_tracked(repo_info: str, supabase_url: str, supabase_anon_key: str) -> bool:
+    headers = {
+        "apikey": supabase_anon_key,
+        "Authorization": f"Bearer {supabase_anon_key}",
+    }
+    response = requests.post(
+        f"{supabase_url}/rest/v1/rpc/is_repo_tracked",
+        headers=headers,
+        json={"p_repo_name": repo_info},
+    )
+    response.raise_for_status()
+    return response.json() is True
 
 def git_commit_sha(repo_root: Path) -> str:
     github_sha = os.environ.get("GITHUB_SHA")
@@ -31,7 +46,7 @@ def git_commit_sha(repo_root: Path) -> str:
 
 def perform_audit(args:list) -> int:
     """
-        args -> ["manifest_path", "repo_root", "repo_info", "github_token"]
+        args -> ["manifest_path", "repo_root", "repo_info", "github_token", "supabase_url", "supabase_key"]
     """
 
 
@@ -39,7 +54,11 @@ def perform_audit(args:list) -> int:
     repo_root = args[1]
     repo_info = args[2]
     github_token = args[3]
+    supabase_url = args[4]
+    supabase_key = args[5]
 
+    if supabase_key and not is_repo_tracked(repo_info, supabase_url, supabase_key):
+        return 0
 
     deps = parse_manifest(manifest_path.read_text())
     detections = check_deps(deps)

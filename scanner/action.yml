@@ -18,6 +18,14 @@ inputs:
     description: 'Token used to read PR files and post PR comments'
     required: true
     default: ${{ github.token }}
+  supabase-url:
+    description: 'Supabase project URL used to check whether this repo is tracked on the dashboard'
+    required: false
+    default: 'https://kbgerqsshxfkhepkiyyl.supabase.co'
+  supabase-pub-key:
+    description: 'Supabase publishable key'
+    required: false
+    default: 'sb_publishable_K8ZOjX1yr9uwhXfEh5S1wg_db30r4lG'
 
 runs:
   using: 'docker'
@@ -28,3 +36,5 @@ runs:
     - ${{ inputs.repo-root }}
     - ${{ inputs.repo-info }}
     - ${{ inputs.github-token }}
+    - ${{ inputs.supabase-url }}
+    - ${{ inputs.supabase-pub-key }}
