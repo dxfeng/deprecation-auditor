@@ -25,7 +25,7 @@ To-do:
 
 ```mermaid
 flowchart TD
-    Browser((Client (Browser))) --> Dashboard[Dashboard\nReact, Vercel]
+    Browser((Client\nBrowser)) --> Dashboard[Dashboard\nReact, Vercel]
 
     subgraph Supabase["Supabase"]
         AuthSvc[Auth: GitHub OAuth]
