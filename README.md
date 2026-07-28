@@ -20,6 +20,7 @@ To-do:
 - Work on packages.json (npm/js)
 - Increase size of deprecated dependency repo
 - Make audit results visible on the Vercel `dashboard`
+- Work on private repos
 
 **Architecture**
 
@@ -35,7 +36,7 @@ flowchart TD
     end
 
     Dashboard -->|OAuth sign-in| AuthSvc
-    Dashboard -->|track / untrack| ReposTable
+    Dashboard -->|track / untrack \n modify repos table| Supabase
 
     Repo[(Pull request on a tracked repo)] -->|pull_request event| Scanner[Scanner\nDocker Action]
     Scanner -->|anon key| RPC
