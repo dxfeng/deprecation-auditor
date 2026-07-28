@@ -143,7 +143,7 @@ export default function App() {
           <h3>Created by Daniel Feng</h3>
         </div>
         <div>
-          <p>Powered by Supabase</p>
+          <p>Powered by Supabase & Vercel</p>
         </div>
       </>
     )
