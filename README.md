@@ -41,7 +41,7 @@ flowchart TD
     Repo[(Pull request on a tracked repo)] -->|pull_request event| Scanner[Scanner\nDocker Action]
     Scanner -->|anon key| RPC
     Scanner -->|GET metadata| PyPI[PyPI JSON API]
-    Scanner -->|check curated list| DeprDataset[(In-repo dataset\ndeprecated_pypi_packages.json)]
+    Scanner -->|check deprecation list| DeprDataset[(In-repo dataset\ndeprecated_pypi_packages.json)]
 
     GitHub[GitHub REST API]
     Dashboard -->|list public repos| GitHub
