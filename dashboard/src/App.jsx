@@ -27,7 +27,6 @@ export default function App() {
   const [session, setSession] = useState(null)
   const [repos, setRepos] = useState([])
   const [trackedRepoIds, setTrackedRepoIds] = useState(new Set())
-  const [supabaseSessionError, setSSError] = useState(null)
 
   useEffect(() => {
     // Code fragmented from https://supabase.com/docs/guides/auth/quickstarts/react
@@ -46,22 +45,14 @@ export default function App() {
   useEffect(() => {
     if (!session) {
       setRepos([])
-      setSSError(null)
       return
     }
 
-    if (!session.provider_token) {
-      setRepos([])
-      setSSError('Supabase provider_token is null, sign back in')
-      return
-    }
-
-    setSSError(null)
-    fetch('https://api.github.com/user/repos?per_page=100', {
-      headers: {
-        Authorization: `token ${session.provider_token}`,
-      },
-    })
+    // Public repos only -- no token needed, and the username is ordinary
+    // profile metadata Supabase persists across sessions (unlike
+    // provider_token, which it deliberately does not)
+    const username = session.user.user_metadata.user_name
+    fetch(`https://api.github.com/users/${username}/repos?per_page=100`)
       .then((res) => res.json())
       .then((data) => setRepos(Array.isArray(data) ? data : []))
   }, [session])
@@ -159,7 +150,6 @@ export default function App() {
       <div style={{ display: 'flex' }}>
         <div style={{ flex: 1 }}>
           <h2>Your repos</h2>
-          {supabaseSessionError && <p style={{ color: 'red' }}>{supabaseSessionError}</p>}
           <ul>
             {repos.map((repo) => (
               <li key={repo.id}>

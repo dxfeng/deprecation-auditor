@@ -2,7 +2,7 @@
 
 **Note:** Audits Python (PyPI) dependencies only.
 
-Access at the [Vercel app](https://deprecation-auditor.vercel.app/), follow instructions on the app to add the GitHub Action to a repo.
+Access at the [Vercel app](https://deprecation-auditor.vercel.app/), follow instructions on the app to add the GitHub Action to a repo. The repo picker only lists public repos.
 
 Make sure the targeted repo has tracking enabled and has the the workflow YAML in the specified path. If `requirements.txt` isn't at the repo root, update the `manifest-path` line in the pasted YAML to point at its actual location.
 
@@ -53,7 +53,7 @@ flowchart LR
     Browser -->|HTTPS| Dashboard
     Dashboard -->|OAuth sign-in| AuthSvc
     Dashboard -->|SELECT / INSERT / DELETE| ReposTable
-    Dashboard -->|list repos, provider_token| GitHubAPI
+    Dashboard -->|list public repos| GitHubAPI
 
     Repo -->|pull_request event| Scanner
     Scanner -->|anon key| RPC
