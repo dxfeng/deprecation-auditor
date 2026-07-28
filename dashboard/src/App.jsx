@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run deprecation auditor
-        uses: dxfeng08/deprecation-auditor/scanner@main
+        uses: dxfeng/deprecation-auditor/scanner@main
         with:
           manifest-path: requirements.txt
 `
